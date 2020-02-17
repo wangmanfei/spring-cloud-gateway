@@ -11,7 +11,7 @@ spring:
   cloud:
     gateway:
       default-filters:
-      - PrefixPath=/httpbin
+      - PrefixPath=/test
       - AddResponseHeader=X-Response-Default-Foo, Default-Bar
 
       routes:
@@ -20,17 +20,20 @@ spring:
       # $ wscat --listen 9000
       # to run client
       # $ wscat --connect ws://localhost:8080/echo
-      - id: websocket_test
-        uri: ws://localhost:9000
-        order: 9000
-        predicates:
-        - Path=/echo
+#      - id: websocket_test
+#        uri: http://localhost:8081/
+#        order: -1
+#        predicates:
+#        - Path=/test
       # =====================================
       - id: default_path_to_httpbin
         uri: ${test.uri}
         order: 10000
         predicates:
         - Path=/**
+  redis:
+    url: http://localhost:6379
+    port: 6379
 
 logging:
   level:

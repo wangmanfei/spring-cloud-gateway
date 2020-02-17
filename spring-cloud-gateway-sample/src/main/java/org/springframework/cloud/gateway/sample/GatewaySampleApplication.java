@@ -20,6 +20,7 @@ package org.springframework.cloud.gateway.sample;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.web.bind.annotation.RequestMapping;
 import reactor.core.publisher.Mono;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -49,11 +50,11 @@ public class GatewaySampleApplication {
 	@Value("${test.uri:http://httpbin.org:80}")
 	String uri;
 
-	@Bean
+	/*@Bean
 	public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
 		//@formatter:off
 		// String uri = "http://httpbin.org:80";
-		// String uri = "http://localhost:9080";
+//		 String uri = "http://localhost:9080";
 		return builder.routes()
 				.route(r -> r.host("**.abc.org").and().path("/anything/png")
 					.filters(f ->
@@ -121,7 +122,17 @@ public class GatewaySampleApplication {
 									.setRefillPeriod(10)
 									.setRefillUnit(TimeUnit.SECONDS)))
 					.uri(uri)
-				)
+				)*//*.route(p -> p
+						.host("*.hystrix.com")
+						.filters(f -> f
+								.hystrix(config -> config
+										.setName("mycmd")
+										.setFallbackUri("forward:/fallback")))
+						.uri("http://httpbin.org:80"))*//*
+				.route(p -> p
+						.path("/get")
+						.filters(f -> f.addRequestHeader("Hello", "World"))
+						.uri("http://httpbin.org:80"))
 				.build();
 		//@formatter:on
 	}
@@ -158,9 +169,9 @@ public class GatewaySampleApplication {
 		public void setMessage(String message) {
 			this.message = message;
 		}
-	}
+	}*/
 
 	public static void main(String[] args) {
-		SpringApplication.run(GatewaySampleApplication.class, args);
+			SpringApplication.run(GatewaySampleApplication.class, args);
 	}
 }

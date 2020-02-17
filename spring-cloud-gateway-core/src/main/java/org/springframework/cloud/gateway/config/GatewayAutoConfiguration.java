@@ -24,6 +24,7 @@ import java.util.function.Consumer;
 import com.netflix.hystrix.HystrixObservableCommand;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import org.springframework.cloud.gateway.route.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.ipc.netty.http.client.HttpClient;
@@ -104,16 +105,6 @@ import org.springframework.cloud.gateway.handler.predicate.ReadBodyPredicateFact
 import org.springframework.cloud.gateway.handler.predicate.RemoteAddrRoutePredicateFactory;
 import org.springframework.cloud.gateway.handler.predicate.RoutePredicateFactory;
 import org.springframework.cloud.gateway.handler.predicate.WeightRoutePredicateFactory;
-import org.springframework.cloud.gateway.route.CachingRouteLocator;
-import org.springframework.cloud.gateway.route.CompositeRouteDefinitionLocator;
-import org.springframework.cloud.gateway.route.CompositeRouteLocator;
-import org.springframework.cloud.gateway.route.InMemoryRouteDefinitionRepository;
-import org.springframework.cloud.gateway.route.RouteDefinitionLocator;
-import org.springframework.cloud.gateway.route.RouteDefinitionRepository;
-import org.springframework.cloud.gateway.route.RouteDefinitionRouteLocator;
-import org.springframework.cloud.gateway.route.RouteDefinitionWriter;
-import org.springframework.cloud.gateway.route.RouteLocator;
-import org.springframework.cloud.gateway.route.RouteRefreshListener;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -276,10 +267,16 @@ public class GatewayAutoConfiguration {
 		return new PropertiesRouteDefinitionLocator(properties);
 	}
 
-	@Bean
+	/*@Bean
 	@ConditionalOnMissingBean(RouteDefinitionRepository.class)
 	public InMemoryRouteDefinitionRepository inMemoryRouteDefinitionRepository() {
 		return new InMemoryRouteDefinitionRepository();
+	}*/
+
+	@Bean
+	@ConditionalOnMissingBean(RouteDefinitionRepository.class)
+	public RedisRouteDefinitionRepository redisRouteDefinitionRepository() {
+		return new RedisRouteDefinitionRepository();
 	}
 
 	@Bean

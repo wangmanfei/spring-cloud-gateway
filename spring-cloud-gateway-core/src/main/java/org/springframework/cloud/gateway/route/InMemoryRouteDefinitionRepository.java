@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package org.springframework.cloud.gateway.route;
@@ -20,23 +19,28 @@ package org.springframework.cloud.gateway.route;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.springframework.cloud.gateway.support.NotFoundException;
-
-import static java.util.Collections.synchronizedMap;
-
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import org.springframework.cloud.gateway.support.NotFoundException;
+import org.springframework.util.StringUtils;
+
+import static java.util.Collections.synchronizedMap;
 
 /**
  * @author Spencer Gibb
  */
 public class InMemoryRouteDefinitionRepository implements RouteDefinitionRepository {
 
-	private final Map<String, RouteDefinition> routes = synchronizedMap(new LinkedHashMap<String, RouteDefinition>());
+	private final Map<String, RouteDefinition> routes = synchronizedMap(
+			new LinkedHashMap<String, RouteDefinition>());
 
 	@Override
 	public Mono<Void> save(Mono<RouteDefinition> route) {
-		return route.flatMap( r -> {
+		return route.flatMap(r -> {
+			if (StringUtils.isEmpty(r.getId())) {
+				return Mono.error(new IllegalArgumentException("id may not be empty"));
+			}
 			routes.put(r.getId(), r);
 			return Mono.empty();
 		});
@@ -49,12 +53,15 @@ public class InMemoryRouteDefinitionRepository implements RouteDefinitionReposit
 				routes.remove(id);
 				return Mono.empty();
 			}
-			return Mono.defer(() -> Mono.error(new NotFoundException("RouteDefinition not found: "+routeId)));
+			return Mono.defer(() -> Mono.error(
+					new NotFoundException("RouteDefinition not found: " + routeId)));
 		});
 	}
 
 	@Override
 	public Flux<RouteDefinition> getRouteDefinitions() {
+		System.out.println("+++++++++++++++++++++++++++++++++++：系统自带的放在内存的动态路由");
 		return Flux.fromIterable(routes.values());
 	}
+
 }
