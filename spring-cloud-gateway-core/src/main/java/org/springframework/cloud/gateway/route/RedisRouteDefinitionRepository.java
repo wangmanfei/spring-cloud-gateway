@@ -18,7 +18,6 @@
 package org.springframework.cloud.gateway.route;
 
 import com.alibaba.fastjson.JSON;
-import org.springframework.cloud.gateway.service.DynamicRouteService;
 import org.springframework.cloud.gateway.support.NotFoundException;
 import org.springframework.data.redis.core.RedisTemplate;
 import reactor.core.publisher.Flux;
@@ -36,8 +35,6 @@ public class RedisRouteDefinitionRepository implements RouteDefinitionRepository
 	//用于存放在redis中网关的key
 	public static final String GATEWAY_ROUTES = "GETEWAYROUTES";
 
-	private DynamicRouteService dynamicRouteService;
-
 	@Resource
 	private RedisTemplate<String,String> redisTemplate;
 
@@ -45,8 +42,6 @@ public class RedisRouteDefinitionRepository implements RouteDefinitionRepository
 	public Mono<Void> save(Mono<RouteDefinition> route) {
 		return route.flatMap( r -> {
 			redisTemplate.opsForList().leftPush(GATEWAY_ROUTES,JSON.toJSONString(r));
-			//刷新路由
-			dynamicRouteService.notifyChanged();
 			return Mono.empty();
 		});
 	}
@@ -68,8 +63,6 @@ public class RedisRouteDefinitionRepository implements RouteDefinitionRepository
 			});
 			//如果在redis中有此路由则删除原有的所有，添加新的集合
 			if (redisList.size()<newRedisList.size()){
-				//刷新路由
-				dynamicRouteService.notifyChanged();
 				redisTemplate.delete(GATEWAY_ROUTES);
 				newRedisList.forEach(newRoute->{
 					redisTemplate.opsForList().leftPush(GATEWAY_ROUTES,JSON.toJSONString(newRoute));

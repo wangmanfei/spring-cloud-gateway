@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springframework.cloud.gateway.mapper.RoutePredicateMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.springframework.cloud.gateway.entity.SQLRoute">
+        <id column="id" property="id" />
+		<result column="route_predicates" property="routePredicates" />
+		<result column="route_filters" property="routeFilters" />
+        <result column="uri" property="uri" />
+        <result column="order" property="order" />
+    </resultMap>
+
+   <select id="getRouteAll" resultMap="BaseResultMap">
+	   select id,route_predicates,route_filters,uri,`order`
+	   from t_route_definition
+   </select>
+</mapper>

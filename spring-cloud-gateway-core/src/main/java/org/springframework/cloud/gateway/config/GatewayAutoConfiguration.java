@@ -273,10 +273,16 @@ public class GatewayAutoConfiguration {
 		return new InMemoryRouteDefinitionRepository();
 	}*/
 
-	@Bean
+	/*@Bean
 	@ConditionalOnMissingBean(RouteDefinitionRepository.class)
 	public RedisRouteDefinitionRepository redisRouteDefinitionRepository() {
 		return new RedisRouteDefinitionRepository();
+	}*/
+
+	@Bean
+	@ConditionalOnMissingBean(MysqlRouteDefinitionRepository.class)
+	public MysqlRouteDefinitionRepository mysqlRouteDefinitionRepository() {
+		return new MysqlRouteDefinitionRepository();
 	}
 
 	@Bean

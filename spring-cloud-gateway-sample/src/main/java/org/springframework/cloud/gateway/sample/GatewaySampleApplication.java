@@ -20,6 +20,8 @@ package org.springframework.cloud.gateway.sample;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.RequestMapping;
 import reactor.core.publisher.Mono;
 
@@ -42,6 +44,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
  * @author Spencer Gibb
  */
 @SpringBootConfiguration
+@MapperScan("org.springframework.cloud.gateway.mapper")
 @EnableAutoConfiguration
 @Import(AdditionalRoutes.class)
 public class GatewaySampleApplication {
